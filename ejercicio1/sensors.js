@@ -1,4 +1,18 @@
-class Sensor {}
+class Sensor {
+    constructor(id,name,type,value,unit,updated_at){
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.value = value;
+        this.unit = unit;
+        this.updated_at = updated_at;
+    }
+
+    set updateValue(newValue){
+        this.value = newValue;
+        this.updated_at = new Date();
+    }
+}
 
 class SensorManager {
     constructor() {
@@ -33,7 +47,29 @@ class SensorManager {
         }
     }
 
-    async loadSensors(url) {}
+    async loadSensors(url) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const sensorsData = await response.json();
+            console.log(sensorsData);
+            this.sensors = sensorsData.map((sensor) => new Sensor(
+                sensor.id,
+                sensor.name,
+                sensor.type,
+                sensor.value,
+                sensor.unit,
+                new Date(sensor.updated_at)
+            ));
+            this.render();
+        } catch(error) {
+            console.error("Error al cargar sensores",error);
+        } finally {
+            console.log("Petición completada");
+        }
+    }
 
     render() {
         const container = document.getElementById("sensor-container");
@@ -87,4 +123,4 @@ class SensorManager {
 
 const monitor = new SensorManager();
 
-monitor.loadSensors("sensors.json");
+monitor.loadSensors("http://127.0.0.1:5500/ejercicio1/sensors.json");
