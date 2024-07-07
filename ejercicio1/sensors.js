@@ -123,4 +123,4 @@ class SensorManager {
 
 const monitor = new SensorManager();
 
-monitor.loadSensors("http://127.0.0.1:5500/ejercicio1/sensors.json");
+monitor.loadSensors("sensors.json");
